@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 46fdabdb56e10d56cc1ac624c28363bb)
+# DO NOT EDIT (digest: a5e578744ff4aa0bd4328cdf3ad9f730)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -21,21 +21,25 @@ true: annot, bin_annot
 "src/client.cmx": for-pack(Redis)
 "src/cache.cmx": for-pack(Redis)
 "src/mutex.cmx": for-pack(Redis)
+<src/*.ml{,i,y}>: package(bytes)
 <src/*.ml{,i,y}>: package(re.str)
 <src/*.ml{,i,y}>: package(uuidm)
 # Library redis_sync
 "src_sync/redis_sync.cmxs": use_redis_sync
+<src_sync/*.ml{,i,y}>: package(bytes)
 <src_sync/*.ml{,i,y}>: package(re.str)
 <src_sync/*.ml{,i,y}>: package(uuidm)
 <src_sync/*.ml{,i,y}>: use_redis
 # Library redis_lwt
 "src_lwt/redis_lwt.cmxs": use_redis_lwt
+<src_lwt/*.ml{,i,y}>: package(bytes)
 <src_lwt/*.ml{,i,y}>: package(lwt)
 <src_lwt/*.ml{,i,y}>: package(lwt.unix)
 <src_lwt/*.ml{,i,y}>: package(re.str)
 <src_lwt/*.ml{,i,y}>: package(uuidm)
 <src_lwt/*.ml{,i,y}>: use_redis
 # Executable redis_examples
+<examples/examples.{native,byte}>: package(bytes)
 <examples/examples.{native,byte}>: package(core)
 <examples/examples.{native,byte}>: package(lwt)
 <examples/examples.{native,byte}>: package(lwt.unix)
@@ -44,6 +48,7 @@ true: annot, bin_annot
 <examples/examples.{native,byte}>: package(uuidm)
 <examples/examples.{native,byte}>: use_redis
 <examples/examples.{native,byte}>: use_redis_lwt
+<examples/*.ml{,i,y}>: package(bytes)
 <examples/*.ml{,i,y}>: package(core)
 <examples/*.ml{,i,y}>: package(lwt)
 <examples/*.ml{,i,y}>: package(lwt.unix)
@@ -53,6 +58,7 @@ true: annot, bin_annot
 <examples/*.ml{,i,y}>: use_redis
 <examples/*.ml{,i,y}>: use_redis_lwt
 # Executable test
+<test/test_sync.{native,byte}>: package(bytes)
 <test/test_sync.{native,byte}>: package(oUnit)
 <test/test_sync.{native,byte}>: package(re.str)
 <test/test_sync.{native,byte}>: package(uuidm)
@@ -60,6 +66,7 @@ true: annot, bin_annot
 <test/test_sync.{native,byte}>: use_redis_sync
 <test/*.ml{,i,y}>: use_redis_sync
 # Executable test_lwt
+<test/test_lwt.{native,byte}>: package(bytes)
 <test/test_lwt.{native,byte}>: package(lwt)
 <test/test_lwt.{native,byte}>: package(lwt.unix)
 <test/test_lwt.{native,byte}>: package(oUnit)
@@ -67,6 +74,7 @@ true: annot, bin_annot
 <test/test_lwt.{native,byte}>: package(uuidm)
 <test/test_lwt.{native,byte}>: use_redis
 <test/test_lwt.{native,byte}>: use_redis_lwt
+<test/*.ml{,i,y}>: package(bytes)
 <test/*.ml{,i,y}>: package(lwt)
 <test/*.ml{,i,y}>: package(lwt.unix)
 <test/*.ml{,i,y}>: package(oUnit)

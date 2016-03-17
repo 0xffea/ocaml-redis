@@ -15,7 +15,7 @@ Library redis
   Findlibname: redis
   Pack: true
   Modules: S, Utils, Client, Cache, Mutex
-  BuildDepends: re.str, uuidm
+  BuildDepends: bytes, re.str, uuidm
 
 Flag lwt
   Description: Build the Lwt client
@@ -35,7 +35,7 @@ Library redis_lwt
   FindlibParent: redis
   Findlibname: lwt
   Modules: Redis_lwt
-  BuildDepends: redis, lwt.unix, lwt
+  BuildDepends: bytes, redis, lwt.unix, lwt
 
 Flag examples
   Description: Build the examples

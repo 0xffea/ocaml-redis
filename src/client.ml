@@ -55,7 +55,7 @@ module Make(IO : S.IO) = struct
     IO.flush out_ch
 
   let read_fixed_line length in_ch =
-    let line = String.create length in
+    let line = Bytes.create length in
     IO.really_input in_ch line 0 length >>= fun () ->
     IO.input_char in_ch >>= fun c1 ->
     IO.input_char in_ch >>= fun c2 ->
