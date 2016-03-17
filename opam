@@ -24,6 +24,8 @@ build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "redis"]
 depends: [
   "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "base-bytes"
   "uuidm"
   "re"
   "lwt" {test}
