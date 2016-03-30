@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 7cc6295d226c0c73d04807395c7268c9)
+# DO NOT EDIT (digest: a5386e6ea03187ddd3dc99b7a52985ec)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -21,7 +21,7 @@ true: annot, bin_annot
 "src/utils.cmx": for-pack(Redis)
 "src/client.cmx": for-pack(Redis)
 "src/cache.cmx": for-pack(Redis)
-"src/mutex.cmx": for-pack(Redis)
+"src/redis_mutex.cmx": for-pack(Redis)
 <src/*.ml{,i,y}>: pkg_re.str
 <src/*.ml{,i,y}>: pkg_uuidm
 # Library redis_lwt

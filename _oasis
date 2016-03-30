@@ -13,7 +13,7 @@ Library redis
   Path: src
   Findlibname: redis
   Pack: true
-  Modules: Redis_sync, S, Utils, Client, Cache, Mutex
+  Modules: Redis_sync, S, Utils, Client, Cache, Redis_mutex
   BuildDepends: re.str, uuidm
 
 Flag lwt
@@ -26,7 +26,7 @@ Library redis_lwt
   Path: src
   FindlibParent: redis
   Findlibname: lwt
-  Modules: Redis_lwt, S, Utils, Client, Cache, Mutex
+  Modules: Redis_lwt, S, Utils, Client, Cache, Redis_mutex
   BuildDepends: lwt.unix, lwt
 
 Flag examples
