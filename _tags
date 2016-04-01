@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 7cc6295d226c0c73d04807395c7268c9)
+# DO NOT EDIT (digest: 7271c8c25730e8e7a631fef1565e4ff7)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -26,9 +26,11 @@ true: annot, bin_annot
 <src/*.ml{,i,y}>: pkg_uuidm
 # Library redis_lwt
 "src/redis_lwt.cmxs": use_redis_lwt
+<src/*.ml{,i,y}>: pkg_bytes
 <src/*.ml{,i,y}>: pkg_lwt
 <src/*.ml{,i,y}>: pkg_lwt.unix
 # Executable redis_examples
+<examples/examples.{native,byte}>: pkg_bytes
 <examples/examples.{native,byte}>: pkg_core
 <examples/examples.{native,byte}>: pkg_lwt
 <examples/examples.{native,byte}>: pkg_lwt.unix
@@ -37,6 +39,7 @@ true: annot, bin_annot
 <examples/examples.{native,byte}>: pkg_uuidm
 <examples/examples.{native,byte}>: use_redis
 <examples/examples.{native,byte}>: use_redis_lwt
+<examples/*.ml{,i,y}>: pkg_bytes
 <examples/*.ml{,i,y}>: pkg_core
 <examples/*.ml{,i,y}>: pkg_lwt
 <examples/*.ml{,i,y}>: pkg_lwt.unix
@@ -46,11 +49,13 @@ true: annot, bin_annot
 <examples/*.ml{,i,y}>: use_redis
 <examples/*.ml{,i,y}>: use_redis_lwt
 # Executable test
+"test/test_sync.byte": pkg_bytes
 "test/test_sync.byte": pkg_oUnit
 "test/test_sync.byte": pkg_re.str
 "test/test_sync.byte": pkg_uuidm
 "test/test_sync.byte": use_redis
 # Executable test_lwt
+"test/test_lwt.byte": pkg_bytes
 "test/test_lwt.byte": pkg_lwt
 "test/test_lwt.byte": pkg_lwt.unix
 "test/test_lwt.byte": pkg_oUnit
@@ -58,6 +63,7 @@ true: annot, bin_annot
 "test/test_lwt.byte": pkg_uuidm
 "test/test_lwt.byte": use_redis
 "test/test_lwt.byte": use_redis_lwt
+<test/*.ml{,i,y}>: pkg_bytes
 <test/*.ml{,i,y}>: pkg_lwt
 <test/*.ml{,i,y}>: pkg_lwt.unix
 <test/*.ml{,i,y}>: pkg_oUnit
