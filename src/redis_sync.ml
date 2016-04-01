@@ -52,4 +52,4 @@ end
 
 module Client = Client.Make(IO)
 module Cache = Cache.Make(IO)(Client)
-module Mutex = Mutex.Make(IO)(Client)
+module Mutex = Redis_mutex.Make(IO)(Client)
