@@ -3,6 +3,7 @@
 *)
 
 module IO : S.IO
+  with type 'a t = 'a
 
 module Client : S.Client with module IO = IO
 
