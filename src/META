@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: f9f41cea7dc027c999f2940e5e29e86e)
+# DO NOT EDIT (digest: e7422ada5685cc25d7c587717e4822fc)
 version = "0.3.2"
 description = "Ocaml bindings for Redis"
 requires = "bytes re.str uuidm"
@@ -22,7 +22,7 @@ package "sync" (
 package "lwt" (
  version = "0.3.2"
  description = "Ocaml bindings for Redis"
- requires = "redis lwt.unix lwt"
+ requires = "unix redis lwt.unix lwt"
  archive(byte) = "redis_lwt.cma"
  archive(byte, plugin) = "redis_lwt.cma"
  archive(native) = "redis_lwt.cmxa"
