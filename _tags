@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 1b460393c5f071bd08b92631413b5bc8)
+# DO NOT EDIT (digest: 4ccbd8ef5bb56dbdae96ef584e260fe5)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -36,6 +36,7 @@ true: annot, bin_annot
 <src_lwt/*.ml{,i,y}>: package(lwt)
 <src_lwt/*.ml{,i,y}>: package(lwt.unix)
 <src_lwt/*.ml{,i,y}>: package(re.str)
+<src_lwt/*.ml{,i,y}>: package(unix)
 <src_lwt/*.ml{,i,y}>: package(uuidm)
 <src_lwt/*.ml{,i,y}>: use_redis
 # Executable redis_examples
@@ -45,6 +46,7 @@ true: annot, bin_annot
 <examples/examples.{native,byte}>: package(lwt.unix)
 <examples/examples.{native,byte}>: package(re.str)
 <examples/examples.{native,byte}>: package(threads)
+<examples/examples.{native,byte}>: package(unix)
 <examples/examples.{native,byte}>: package(uuidm)
 <examples/examples.{native,byte}>: use_redis
 <examples/examples.{native,byte}>: use_redis_lwt
@@ -55,6 +57,7 @@ true: annot, bin_annot
 <examples/*.ml{,i,y}>: package(lwt.unix)
 <examples/*.ml{,i,y}>: package(re.str)
 <examples/*.ml{,i,y}>: package(threads)
+<examples/*.ml{,i,y}>: package(unix)
 <examples/*.ml{,i,y}>: package(uuidm)
 <examples/*.ml{,i,y}>: use_redis
 <examples/*.ml{,i,y}>: use_redis_lwt
@@ -73,6 +76,7 @@ true: annot, bin_annot
 <test/test_lwt.{native,byte}>: package(lwt.unix)
 <test/test_lwt.{native,byte}>: package(oUnit)
 <test/test_lwt.{native,byte}>: package(re.str)
+<test/test_lwt.{native,byte}>: package(unix)
 <test/test_lwt.{native,byte}>: package(uuidm)
 <test/test_lwt.{native,byte}>: use_redis
 <test/test_lwt.{native,byte}>: use_redis_lwt
@@ -81,6 +85,7 @@ true: annot, bin_annot
 <test/*.ml{,i,y}>: package(lwt.unix)
 <test/*.ml{,i,y}>: package(oUnit)
 <test/*.ml{,i,y}>: package(re.str)
+<test/*.ml{,i,y}>: package(unix)
 <test/*.ml{,i,y}>: package(uuidm)
 <test/*.ml{,i,y}>: use_redis
 <test/*.ml{,i,y}>: use_redis_lwt
