@@ -20,3 +20,7 @@ Changelog can be found in [CHANGES.md](/CHANGES.md) file.
 ```
 opam install redis-sync redis-lwt
 ```
+
+## Documentation
+
+http://0xffea.github.io/ocaml-redis/
