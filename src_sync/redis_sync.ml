@@ -53,6 +53,24 @@ module IO = struct
 
   let stream_from = Stream.from
   let stream_next = Stream.next
+
+  type mutex = Mutex.t
+  let mutex_create = Mutex.create
+  let mutex_with m f =
+    Mutex.lock m;
+    try
+      let x = f() in
+      Mutex.unlock m;
+      x
+    with e ->
+      Mutex.unlock m;
+      raise e
+
+  type condition = Condition.t
+  let condition_create () = Condition.create ()
+  let condition_wait c m = Condition.wait c m
+  let condition_signal = Condition.signal
+  let condition_broadcast = Condition.broadcast
 end
 
 module Client = Redis.Client.Make(IO)

@@ -7,6 +7,7 @@ open Lwt.Infix
 (* Compute fibonacci function using Redis as a memoization cache *)
 module Test_lwt_fib = struct
   module C = Redis_lwt.Client
+  module P = Redis_lwt.Pool
   module Cache = Redis_lwt.Cache(struct
       type key = int
       type data = int
@@ -26,11 +27,12 @@ module Test_lwt_fib = struct
     done;
     !cur
 
-  let check_fib n (r:C.connection) =
+  let check_fib n (pool:P.t) =
     let rec fib n =
       if n <= 1 then
         Lwt.return 1
-      else Cache.get r n >>= function
+      else (
+        P.with_connection pool (fun c -> Cache.get c n) >>= function
         | Some n -> Lwt.return n
         | None ->
           let n1 = fib (n-1) in
@@ -38,7 +40,8 @@ module Test_lwt_fib = struct
           n1 >>= fun n1 ->
           n2 >>= fun n2 ->
           let res = n1 + n2 in
-          Cache.set r n res >|= fun _ -> res
+          P.with_connection pool (fun c -> Cache.set c n res) >|= fun _ -> res
+      )
     in
     let start = Unix.gettimeofday () in
     fib n >>= fun res ->
@@ -48,7 +51,14 @@ module Test_lwt_fib = struct
     OUnit.assert_equal ~printer:string_of_int ref res;
     Lwt.return ()
 
-    let test_fib n = Test_lwt.bracket (check_fib n)
+  let bracket test_case () =
+    try
+      Lwt_main.run @@ P.with_pool ~size:32 Test_lwt.redis_spec test_case
+    with C.Unexpected reply as exn ->
+      Printf.eprintf "Got unexpected reply: %s\n" (C.string_of_reply reply);
+      raise exn
+
+    let test_fib n = bracket (check_fib n)
 
     let suite =
       "fib" >::: [
@@ -56,6 +66,7 @@ module Test_lwt_fib = struct
         "20" >:: test_fib 20;
         "30" >:: test_fib 30;
         "40" >:: test_fib 40;
+        "60" >:: test_fib 60;
       ]
 
    let teardown =

@@ -38,6 +38,15 @@ module type IO = sig
   val stream_from : (stream_count -> 'b option t) -> 'b stream
   val stream_next: 'a stream -> 'a t
 
+  type mutex
+  val mutex_create : unit -> mutex
+  val mutex_with : mutex -> (unit -> 'a t) -> 'a t
+
+  type condition
+  val condition_create : unit -> condition
+  val condition_wait : condition -> mutex -> unit t
+  val condition_signal : condition -> unit
+  val condition_broadcast: condition -> unit
 end
 
 module type Client = sig
@@ -548,6 +557,11 @@ module type Client = sig
   val unwatch : connection -> unit IO.t
 
   val queue : (unit -> 'a IO.t) -> unit IO.t
+  (** Within a transaction (see {!multi}, {!exec}, and {!discard}),
+      commands will not return their normal value. It is necessary to
+      wrap each of them in their individual [Client.queue (fun () -> the_command)]
+      to avoid getting an exception [Unexpected (Status "QUEUED")].
+  *)
 
   (** {2 Scripting commands} *)
 
@@ -652,4 +666,28 @@ module type Mutex = sig
   val acquire : Client.connection -> ?atime:float -> ?ltime:int -> string -> string -> unit IO.t
   val release : Client.connection -> string -> string -> unit IO.t
   val with_mutex : Client.connection -> ?atime:float -> ?ltime:int -> string -> (unit -> 'a IO.t) -> 'a IO.t
+end
+
+(** {2 Connection pool} *)
+module type POOL = sig
+  module IO : IO
+  module Client : Client
+
+  type t
+
+  val size : t -> int
+
+  val create : size:int -> Client.connection_spec -> t IO.t
+  (** Create a pool of [size] connections, using the given spec. *)
+
+  val close : t -> unit IO.t
+  (** Close all connections *)
+
+  val with_pool : size:int -> Client.connection_spec -> (t -> 'a IO.t) -> 'a IO.t
+  (** Create a pool of [size] connections, using the given spec,
+      pass it to the callback, and then destroy it. *)
+
+  val with_connection : t -> (Client.connection -> 'a IO.t) -> 'a IO.t
+  (** Temporarily require a connection to perform some operation.
+      The connection must not escape the scope of the callback *)
 end

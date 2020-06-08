@@ -20,3 +20,7 @@ module ClusterCache (Params : Redis.S.Cache_params) : Redis.S.Cache
 module ClusterMutex : Redis.S.Mutex
   with module IO = IO
   with module Client = ClusterClient
+
+module Pool : Redis.S.POOL
+  with module IO = IO
+   and module Client = Client

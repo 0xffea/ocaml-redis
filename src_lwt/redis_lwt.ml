@@ -55,6 +55,16 @@ module IO = struct
 
   let stream_from = Lwt_stream.from
   let stream_next = Lwt_stream.next
+
+  type mutex = Lwt_mutex.t
+  let mutex_create = Lwt_mutex.create
+  let mutex_with m f = Lwt_mutex.with_lock m f
+
+  type condition = unit Lwt_condition.t
+  let condition_create () = Lwt_condition.create ()
+  let condition_wait c m = Lwt_condition.wait ~mutex:m c
+  let condition_signal c = Lwt_condition.signal c ()
+  let condition_broadcast c = Lwt_condition.broadcast c ()
 end
 
 module Client = Redis.Client.Make(IO)
@@ -64,3 +74,5 @@ module Mutex = Redis.Mutex.Make(IO)(Client)
 module ClusterClient = Redis.Client.MakeCluster(IO)
 module ClusterCache = Redis.Cache.Make(IO)(ClusterClient)
 module ClusterMutex = Redis.Mutex.Make(IO)(ClusterClient)
+
+module Pool = Redis.Pool.Make(IO)(Client)
