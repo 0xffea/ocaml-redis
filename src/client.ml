@@ -291,11 +291,6 @@ module Common(IO: S.IO) = struct
     | `Int n -> IO.return n
     | x      -> IO.fail (Unexpected x)
 
-  let return_int64 = function
-    | `Int n   -> IO.return (Int64.of_int n)
-    | `Int64 n -> IO.return n
-    | x        -> IO.fail (Unexpected x)
-
   let return_float = function
     | `Int n   -> IO.return (float_of_int n)
     | `Int64 n -> IO.return (Int64.to_float n)
@@ -539,12 +534,10 @@ module type Mode = sig
   val return_no_nil_bulk : reply -> string IO.t
   val return_bool : reply -> bool IO.t
   val return_status : reply -> [> `Status of string ] IO.t
-  val return_expected_status : string -> reply -> unit IO.t
   val return_ok_or_nil : reply -> bool IO.t
   val return_ok_status : reply -> unit IO.t
   val return_queued_status : reply -> unit IO.t
   val return_int : reply -> int IO.t
-  val return_int64 : reply -> Int64.t IO.t
   val return_float : reply -> float IO.t
   val return_int_option : reply -> int option IO.t
   val return_float_option : reply -> float option IO.t

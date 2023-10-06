@@ -102,7 +102,7 @@ end = struct
     Client.info conn >>| fun result ->
     (let tcp_port =
        CCList.find_map (fun (k,v) -> if k = "tcp_port" then Some v else None) result
-       |> CCOpt.get_lazy (fun () -> assert_failure "didn't find any port")
+       |> CCOption.get_lazy (fun () -> assert_failure "didn't find any port")
      in
      assert_bool "Got wrong data about port with INFO command"
        (int_of_string tcp_port = 6379))

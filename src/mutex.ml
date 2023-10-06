@@ -36,7 +36,7 @@ module Make(IO : S.IO)(Client : S.Client with module IO = IO) = struct
       IO.fail (Error ("lock was lost: " ^ mutex))
 
   let with_mutex conn ?atime ?ltime mutex fn =
-    let id = Uuidm.(to_string (create `V4)) in
+    let id = Uuidm.(to_string (v `V4)) in
     acquire conn ?atime ?ltime mutex id >>= fun _ ->
     IO.catch
       (* try *) (fun () ->

@@ -23,6 +23,6 @@ depends: [
   "ocaml" { >= "4.03.0" }
   "camlp-streams"
   "ounit2" {with-test}
-  "containers" {with-test}
+  "containers" {with-test & >= "3.0"}
   "odoc" {with-doc}
 ]
