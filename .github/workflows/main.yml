@@ -15,7 +15,7 @@ jobs:
           #- windows-latest
         ocaml-compiler:
           - 4.03.x
-          - 4.12.x
+          - 4.14.x
           - 5.03.x
     runs-on: ${{ matrix.os }}
     steps:
@@ -27,7 +27,7 @@ jobs:
     - run: opam install -t . --deps-only
     - run: opam exec -- dune build
     - name: Install docker compose
-      run: sudo pip install docker-compose
+      run: sudo apt install docker-compose
       if: ${{ matrix.os == 'ubuntu-latest'}}
     - name: Start containers
       run: docker-compose up -d
