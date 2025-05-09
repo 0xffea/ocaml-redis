@@ -503,13 +503,21 @@ module type Client = sig
   (** Returns the number of subscribers (not counting clients subscribed to patterns) for the specified channels. *)
   val pubsub_numsub : connection -> string list -> reply list IO.t
 
-  (** Subscribes the client to the specified channels. *)
+  (** Subscribes the client to the specified channels.
+
+      From now on only pubsub related commands are accepted on the connection.
+      Use {!stream} to read the stream the notifications (possibly-concurrently).
+        Each notification in the form of [ ["message"; "<channel name>"; "<message>"] ] for
+        subscribed messages, or [ ["subscribe"; <list of channel>] ] or [ ["unsubscribe"; <list of channels] ].
+      Use {!reset} to exit the subscription state and issue other types of commands.
+      See https://redis.io/docs/latest/develop/interact/pubsub/ for more details.
+      *)
   val subscribe : connection -> string list -> unit IO.t
 
   (** Unsubscribes the client from the given channels, or from all of them if an empty list is given *)
   val unsubscribe : connection -> string list -> unit IO.t
 
-  (** Subscribes the client to the given patterns. *)
+  (** Subscribes the client to the given patterns. See {!subscribe} for more details. *)
   val psubscribe : connection -> string list -> unit IO.t
 
   (** Unsubscribes the client from the given patterns. *)
