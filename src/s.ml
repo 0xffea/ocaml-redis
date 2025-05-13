@@ -94,6 +94,14 @@ module type Client = sig
     port : int;
   }
 
+  val string_of_connection_spec : connection_spec -> string
+  (** Print the spec
+      @since NEXT_RELEASE *)
+
+  val pp_connection_spec : Format.formatter -> connection_spec -> unit
+  (** Print the spec
+      @since NEXT_RELEASE *)
+
   val connection_spec : ?port:int -> string -> connection_spec
   (** Create a connection spec with the given host.
       @param port port to connect to (default [6379])

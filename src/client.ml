@@ -51,6 +51,12 @@ module Common(IO: S.IO) = struct
     port : int;
   }
 
+  let string_of_connection_spec s =
+    if s.port = 0 then Printf.sprintf "unix:%S" s.host
+    else Printf.sprintf "%s:%d" s.host s.port
+
+  let pp_connection_spec out sp = Format.pp_print_string out (string_of_connection_spec sp)
+
   let connection_spec ?(port=6379) host = {host; port}
 
   let connection_spec_unix_socket socket = {host = socket; port = 0}
@@ -509,6 +515,8 @@ module type Mode = sig
 
   val connection_spec : ?port:int -> string -> connection_spec
   val connection_spec_unix_socket : string -> connection_spec
+  val string_of_connection_spec : connection_spec -> string
+  val pp_connection_spec : Format.formatter -> connection_spec -> unit
 
   module SlotMap : Map.S with type key = int
   module ConnectionSpecMap : Map.S with type key = connection_spec
