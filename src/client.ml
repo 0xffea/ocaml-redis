@@ -116,7 +116,7 @@ module Common(IO: S.IO) = struct
       | Inclusive bound -> String.concat "" [""; string_of_float bound]
   end
 
-  let write out_ch args =
+  let write_with_optional_flush ~flush out_ch args =
     let num_args = List.length args in
     IO.output_string out_ch (Printf.sprintf "*%d" num_args) >>= fun () ->
     IO.output_string out_ch "\r\n" >>= fun () ->
@@ -129,7 +129,13 @@ module Common(IO: S.IO) = struct
          IO.output_string out_ch "\r\n"
       )
       args >>= fun () ->
-    IO.flush out_ch
+    if flush then IO.flush out_ch else IO.return ()
+
+  let write out_ch args =
+    write_with_optional_flush ~flush:true out_ch args
+
+  let write_noflush out_ch args =
+    write_with_optional_flush ~flush:false out_ch args
 
   let read_fixed_line length in_ch =
     let line = Bytes.create length in
@@ -547,6 +553,7 @@ module type Mode = sig
   end
 
   val write : IO.out_channel -> string list -> unit IO.t
+  val write_noflush : IO.out_channel -> string list -> unit IO.t
   val interleave : ('a * 'a) list -> 'a list
   val return_bulk : reply -> string option IO.t
   val return_no_nil_bulk : reply -> string IO.t
@@ -814,6 +821,33 @@ module MakeClient(Mode: Mode) = struct
     send_request connection command >>= return_ok_status
 
   let send_custom_request = send_request
+
+  let send_pipelined_custom_requests conn commands : reply list IO.t = 
+    let num_commands = List.length commands in
+    let rec write_all = function
+      | [] -> IO.flush conn.out_ch
+      | first_command :: other_commands ->
+        write_noflush conn.out_ch first_command >>= fun () ->
+        write_all other_commands
+    in
+
+    let rec read_all acc num =
+    if num = 0 then
+      IO.return (List.rev acc)
+    else
+      read_reply_exn conn.in_ch >>= function
+      | `Status _
+      | `Int _
+      | `Int64 _
+      | `Bulk _
+      | `Ask _
+      | `Moved _
+      | `Multibulk _ as reply ->
+        read_all (reply :: acc) (num-1)
+    in
+
+    write_all commands >>= fun () ->
+    read_all [] num_commands 
 
   (** SENTINEL commands *)
   let sentinel_masters connection =

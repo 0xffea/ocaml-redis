@@ -143,6 +143,11 @@ module type Client = sig
   (** Sends a custom request to the Redis server. Example: [ send_request connection ["set"; "foo"; "bar"] ] @since 0.6*)
   val send_custom_request : connection -> string list -> reply IO.t
 
+  val send_pipelined_custom_requests : connection -> string list list -> reply list IO.t
+  (** Send a list of custom requests in a pipelined fashion (all are written, then all
+      replies are read)
+      @since NEXT_RELEASE *)
+
   (** Authenticate to server with username and password. *)
   val auth_acl : connection -> string -> string -> unit IO.t
 
