@@ -832,17 +832,10 @@ module MakeClient(Mode: Mode) = struct
     in
 
     let rec read_all acc num =
-    if num = 0 then
-      IO.return (List.rev acc)
-    else
-      read_reply_exn conn.in_ch >>= function
-      | `Status _
-      | `Int _
-      | `Int64 _
-      | `Bulk _
-      | `Ask _
-      | `Moved _
-      | `Multibulk _ as reply ->
+      if num = 0 then
+        IO.return (List.rev acc)
+      else
+        read_reply_exn conn.in_ch >>= fun reply ->
         read_all (reply :: acc) (num-1)
     in
 
