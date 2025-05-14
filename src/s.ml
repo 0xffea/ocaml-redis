@@ -96,11 +96,11 @@ module type Client = sig
 
   val string_of_connection_spec : connection_spec -> string
   (** Print the spec
-      @since NEXT_RELEASE *)
+      @since 0.8 *)
 
   val pp_connection_spec : Format.formatter -> connection_spec -> unit
   (** Print the spec
-      @since NEXT_RELEASE *)
+      @since 0.8 *)
 
   val connection_spec : ?port:int -> string -> connection_spec
   (** Create a connection spec with the given host.
@@ -154,7 +154,7 @@ module type Client = sig
   val send_pipelined_custom_requests : connection -> string list list -> reply list IO.t
   (** Send a list of custom requests in a pipelined fashion (all are written, then all
       replies are read)
-      @since NEXT_RELEASE *)
+      @since 0.8 *)
 
   (** Authenticate to server with username and password. *)
   val auth_acl : connection -> string -> string -> unit IO.t

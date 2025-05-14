@@ -1,8 +1,14 @@
 # Changelog
 
+## 0.8
+
+- printer for connection spec
+- add `send_pipelined_custom_requests`
+- add more docs about pubsub
+
 ## 0.7.1
 
-fix: remove debug message in pool
+- fix: remove debug message in pool
 
 ## 0.7
 
