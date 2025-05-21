@@ -14,7 +14,7 @@ module Make(IO : S.IO)(Client : S.Client with module IO=IO)
     pool: Client.connection Queue.t; (* connections available *)
     spec: Client.connection_spec;
     size: int;
-    mutable closed: bool; (* once true, no query accepted *)
+    closed: bool Atomic.t; (* once true, no query accepted *)
   }
 
   let size self = self.size
@@ -36,24 +36,25 @@ module Make(IO : S.IO)(Client : S.Client with module IO=IO)
       pool=Queue.create ();
       spec;
       size;
-      closed = false;
+      closed = Atomic.make false;
     } in
     init_conns self size >>= fun () ->
     IO.return self
 
   let close (self:t) : unit IO.t =
-    self.closed <- true; (* should always be atomic *)
-    (* wake up waiters eagerly, to have them die earlier *)
-    IO.condition_broadcast self.condition;
-    (* close remaining connections *)
-    let rec close_conns_in_pool_ () =
-      if Queue.is_empty self.pool then IO.return ()
-      else (
-        let c = Queue.pop self.pool in
-        Client.disconnect c >>= close_conns_in_pool_
-      )
-    in
-    close_conns_in_pool_ ()
+    if not (Atomic.exchange self.closed true) then (
+      (* wake up waiters eagerly, to have them die earlier *)
+      IO.condition_broadcast self.condition;
+      (* close remaining connections *)
+      let rec close_conns_in_pool_ () =
+        if Queue.is_empty self.pool then IO.return ()
+        else (
+          let c = Queue.pop self.pool in
+          Client.disconnect c >>= close_conns_in_pool_
+        )
+      in
+      close_conns_in_pool_ ()
+    ) else IO.return ()
 
   let with_pool ~size spec f : _ IO.t =
     create ~size spec >>= fun pool ->
@@ -67,7 +68,7 @@ module Make(IO : S.IO)(Client : S.Client with module IO=IO)
   let release_conn_ (self:t) (c:Client.connection) : unit IO.t =
     IO.mutex_with self.mutex
       (fun () ->
-         if self.closed then (
+         if Atomic.get self.closed then (
            (* close connection *)
            Client.disconnect c
          ) else (
@@ -83,7 +84,7 @@ module Make(IO : S.IO)(Client : S.Client with module IO=IO)
     Client.connect self.spec >>= release_conn_ self
 
   let rec with_connection (self:t) (f: _ -> 'a IO.t) : 'a IO.t =
-    if self.closed then IO.fail (Failure "pool closed")
+    if Atomic.get self.closed then IO.fail (Failure "pool closed")
     else (
       (* try to acquire a connection *)
       IO.mutex_with self.mutex

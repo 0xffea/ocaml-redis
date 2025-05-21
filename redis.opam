@@ -23,6 +23,7 @@ depends: [
   "uuidm"
   "stdlib-shims"
   "re" {>= "1.7.2"}
+  "atomic"
   "ocaml" { >= "4.03.0" }
   "containers" {with-test & >= "3.0"}
   "odoc" {with-doc}
